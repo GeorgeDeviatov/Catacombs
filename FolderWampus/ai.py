@@ -53,15 +53,15 @@ class Player:
             if self.agent.pos[1]+1<self.agent.env.height:
                 self.agent.pos[1] += 1
                 self.tick = 1000
-        if keys[pg.K_w] == True:
+        elif keys[pg.K_w] == True:
             if self.agent.pos[1]>0:
                 self.agent.pos[1]-=1
                 self.tick = 1000
-        if keys[pg.K_d] == True:
+        elif keys[pg.K_d] == True:
             if self.agent.pos[0]+1 < self.agent.env.width:
                 self.agent.pos[0]+=1
                 self.tick = 1000
-        if keys[pg.K_a] == True:
+        elif keys[pg.K_a] == True:
             if self.agent.pos[0]>0:
                 self.agent.pos[0]-=1
                 self.tick = 1000
