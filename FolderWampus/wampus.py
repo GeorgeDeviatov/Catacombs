@@ -56,6 +56,9 @@ class Environment:
         self.get_mes()
     
     def deth(self):
+        self.agent.mes = 'deth'
+        if self.agent.I.pl:
+            self.ap.draw_all()
         self.level = 0
         self.make_map(self.width,self.height,self.level+self.start_m
                          ,self.level+self.start_h,1)
@@ -64,6 +67,9 @@ class Environment:
 
     
     def new_lvl(self):
+        self.agent.mes = 'g'
+        if self.agent.I.pl:
+            self.ap.draw_all()
         self.level+=1
         self.make_map(self.width,self.height,self.level+self.start_m
                           ,self.level+self.start_h,1)
@@ -132,6 +138,7 @@ class App:
         self.sizex = int(self.wi/self.env.width)
         self.sizey = int(self.he/self.env.height)
         self.mode_map = 1
+        self.env.ap = self
         '''
         self.pl = pg.image.load('heroy.bmp').convert()
         self.mon = pg.image.load('monster.bmp').convert()
@@ -153,12 +160,15 @@ class App:
         elif m == 'h':
             text = "Its blowing..."
         elif m == 'g':
-            text = "YOU FOUND SOME GOLD"
+            text = "YOU FOUND SOME GOLD!!!!PRESS P TO CONTINUE"
+        elif m == 'deth':
+            text = "You are eaten by terrible monster!Press p to play again.Your lvl - {}".format(self.env.level)
+            
         elif m == 'n' or m == None:
             text = "Nothing interesting"
         
         size1 = int((self.wi-10)/len(text))
-        size2 = int((self.he/3) - 10)
+        size2 = int((self.he/2) - 10)
         size = size1
         if size2<size1:
             size = size2
@@ -176,6 +186,23 @@ class App:
         self.screen.blit(f_l,(self.wi+5,5))
         
     
+    
+    def draw_all(self):
+        while True:
+            self.draw_map(self.env.agent.ag_map)
+            self.draw_map(self.env.map)
+            self.draw_agent()
+            self.draw_mes()
+            for event in pg.event.get():
+                if event.type == pg.QUIT:
+                    pg.quit()
+                    sys.exit()
+                if event.type == pg.KEYDOWN:
+                    if event.key == pg.K_p:
+                        return
+            
+            pg.display.flip()
+            self.screen.fill((0,0,0))
     
     
     def draw_map(self,map_dr):
@@ -203,7 +230,10 @@ class App:
                                     ((self.sizex*x,self.sizey*y),(self.sizex*(x+1),self.sizey*y),
                                     (self.sizex*(x+1),self.sizey*(y+1)),(self.sizex*x,self.sizey*(y+1))))
                                     
-                                    
+    
+
+
+                                
     def draw(self):
         begin_time = 0
         while True:
@@ -238,6 +268,7 @@ class App:
             pg.display.set_caption(str(self.clock.get_fps()))
             pg.display.flip()
             col = env.level
+            col*=10
             if col > 255:
                 col = 255                
             self.screen.fill((col,0,0))
